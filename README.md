@@ -14,16 +14,13 @@ Backend-приложение для управления личными фина
 - ✅ Экспорт данных
 
 ## Установка и запуск
-
+git clone https://github.com/thainlao/OOP-finance-project
 ### Требования
 - Java 11+
 - Maven 3.6+
 
 # Сборка проекта
 mvn clean compile
-
-# Запуск приложения
-mvn exec:java -Dexec.mainClass="com.finance.Main"
 
 # Запуск тестов
 mvn test
