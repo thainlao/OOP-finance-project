@@ -258,8 +258,22 @@ public class CLI {
     }
 
     private void exportToCSV() {
-        // Simplified CSV export
-        System.out.println("✅ Данные экспортированы в CSV формате (реализация в процессе)");
+        if (!authService.isLoggedIn()) {
+            System.out.println("❌ Необходимо войти в систему");
+            return;
+        }
+        
+        try (PrintWriter writer = new PrintWriter("transactions.csv")) {
+            writer.println("Тип,Категория,Сумма,Описание,Дата");
+            for (Transaction t : authService.getCurrentUser().getWallet().getTransactions()) {
+                writer.printf("%s,%s,%.2f,%s,%s%n",
+                    t.getType(), t.getCategory(), t.getAmount(), 
+                    t.getDescription(), t.getDate());
+            }
+            System.out.println("✅ Данные экспортированы в transactions.csv");
+        } catch (IOException e) {
+            System.out.println("❌ Ошибка при экспорте в CSV");
+        }
     }
 
     private void exportToJSON() {

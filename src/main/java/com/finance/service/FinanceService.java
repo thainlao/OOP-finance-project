@@ -58,6 +58,27 @@ public class FinanceService {
         return true;
     }
 
+    public boolean transfer(String toUsername, double amount, String description) {
+        if (!authService.isLoggedIn() || amount <= 0) return false;
+        
+        User fromUser = authService.getCurrentUser();
+        Optional<User> toUser = userRepository.findByUsername(toUsername);
+        
+        if (toUser.isEmpty()) return false;
+        
+        // Создаем расход у отправителя
+        Transaction expense = new Transaction(Transaction.Type.EXPENSE, "Перевод", amount, 
+                                            "Перевод пользователю " + toUsername, fromUser.getUsername());
+        fromUser.getWallet().addTransaction(expense);
+        
+        // Создаем доход у получателя  
+        Transaction income = new Transaction(Transaction.Type.INCOME, "Перевод", amount,
+                                        "Перевод от пользователя " + fromUser.getUsername(), toUsername);
+        toUser.get().getWallet().addTransaction(income);
+        
+        return true;
+    }
+
     public double getBalance() {
         return authService.isLoggedIn() ? 
             authService.getCurrentUser().getWallet().getBalance() : 0;
